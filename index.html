@@ -11,7 +11,9 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
@@ -119,11 +121,11 @@
 
         .header-title {
             text-align: center;
-            color: #1e3a8a;
-            font-size: 22px;
+            color: #2563eb;
+            font-size: 24px;
             font-weight: 700;
             text-transform: uppercase;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             letter-spacing: 0.5px;
         }
 
@@ -136,7 +138,7 @@
         }
 
         .logo-container img {
-            height: 30px;
+            height: 32px;
             object-fit: contain;
         }
 
@@ -212,51 +214,50 @@
         }
 
         .transfer-note {
-            font-size: 13px;
-            color: #64748b;
+            font-size: 13.5px;
+            color: #475569;
             line-height: 1.6;
             margin-bottom: 20px;
         }
 
+        /* Cấu hình hàng thông tin */
         .info-row {
-            font-size: 14px;
-            margin-bottom: 10px;
-            color: #334155;
-            display: flex;
-            align-items: center;
-        }
-
-        .info-row strong {
-            font-weight: 600;
-            color: #64748b;
-            width: 110px;
-            display: inline-block;
-            flex-shrink: 0;
-        }
-
-        .info-value {
+            font-size: 14.5px;
+            margin-bottom: 12px;
             color: #0f172a;
-            font-weight: 700;
+            line-height: 1.5;
         }
 
+        /* Tiêu đề nhãn: Chữ Đậm, Đen */
+        .info-row strong {
+            font-weight: 700;
+            color: #0f172a;
+            margin-right: 4px;
+            display: inline-block;
+        }
+
+        /* Giá trị đi kèm: Chữ Thường (Regular) */
+        .info-value {
+            font-weight: 400;
+            color: #0f172a; /* Màu đen tối đồng bộ */
+        }
+
+        /* Đã cập nhật phần nội dung chuyển khoản sang màu đen đồng bộ */
         #view-content {
-            color: #2563eb;
+            color: #0f172a; 
         }
 
         .btn-copy {
             color: #2563eb;
             text-decoration: none;
-            font-size: 12px;
-            margin-left: 8px;
-            font-weight: 600;
-            background: #eff6ff;
-            padding: 2px 8px;
-            border-radius: 4px;
+            font-size: 13px;
+            margin-left: 6px;
+            font-weight: 500;
             transition: all 0.2s;
         }
 
         .btn-copy:hover {
-            background: #dbeafe;
+            text-decoration: underline;
         }
 
         .more-banks {
@@ -264,8 +265,8 @@
             margin-top: 16px;
             color: #2563eb;
             text-decoration: none;
-            font-size: 13.5px;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 500;
         }
 
         .more-banks:hover {
@@ -283,11 +284,11 @@
         .qr-box-premium {
             border: 1px solid #e2e8f0;
             border-radius: 16px;
-            padding: 6px;
+            padding: 8px;
             background: #ffffff;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
             transition: all 0.3s ease;
-            width: 210px;
+            width: 200px;
             height: auto;
             display: flex;
             align-items: center;
@@ -424,7 +425,6 @@
     const viewContent = document.getElementById('view-content');
     const qrImage = document.getElementById('qr-image');
 
-    // Khai báo phần xử lý upload logo thủ công
     const uploadVnpay = document.getElementById('upload-vnpay');
     const uploadVietqr = document.getElementById('upload-vietqr');
     const imgVnpay = document.getElementById('img-vnpay');
@@ -458,25 +458,23 @@
         qrImage.classList.remove('qr-loading');
     };
 
-    // Lắng nghe sự kiện khi người dùng chọn file ảnh VNPAY thủ công
     uploadVnpay.addEventListener('change', function() {
         const file = this.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                imgVnpay.src = e.target.result; // Gán ảnh trực tiếp dạng dữ liệu local
+                imgVnpay.src = e.target.result;
             }
             reader.readAsDataURL(file);
         }
     });
 
-    // Lắng nghe sự kiện khi người dùng chọn file ảnh VietQR thủ công
     uploadVietqr.addEventListener('change', function() {
         const file = this.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                imgVietqr.src = e.target.result; // Gán ảnh trực tiếp dạng dữ liệu local
+                imgVietqr.src = e.target.result;
             }
             reader.readAsDataURL(file);
         }
