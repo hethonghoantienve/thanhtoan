@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cổng Thanh Toán Trực Tuyến Cao Cấp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            padding: 30px 20px;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* --- BẢNG NHẬP LIỆU HIỆN ĐẠI (ADMIN PANEL) --- */
+        .input-panel {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 35px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .input-panel h3 {
+            margin-bottom: 20px;
+            color: #0f172a;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-panel h3::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 16px;
+            background: #2563eb;
+            border-radius: 2px;
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #334155;
+            transition: all 0.2s ease;
+            background-color: #f8fafc;
+        }
+
+        /* Tối ưu riêng cho ô chọn file */
+        .form-group input[type="file"] {
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2563eb;
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 233, 0.1);
+        }
+
+        .form-note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        /* --- GIAO DIỆN THANH TOÁN CHUẨN PREMIUM (USER) --- */
+        .payment-gateway {
+            background: #ffffff;
+            padding: 35px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+            border: 1px solid #e2e8f0;
+        }
+
+        .header-title {
+            text-align: center;
+            color: #1e3a8a;
+            font-size: 22px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .logo-container img {
+            height: 30px;
+            object-fit: contain;
+        }
+
+        .divider {
+            width: 1px;
+            height: 24px;
+            background-color: #e2e8f0;
+        }
+
+        /* Danh sách phương thức */
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .method-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border: 1px solid #f1f5f9;
+            background-color: #f8fafc;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .method-item input[type="radio"] {
+            margin-right: 14px;
+            accent-color: #2563eb;
+            width: 18px;
+            height: 18px;
+        }
+
+        .method-label {
+            font-size: 14.5px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .method-fee {
+            font-size: 13px;
+            color: #94a3b8;
+            font-style: italic;
+            font-weight: 400;
+            margin-left: 4px;
+        }
+
+        /* Khi phương thức Chuyển Khoản được chọn hoạt động */
+        .method-item.active {
+            border-color: #cbd5e1;
+            background-color: #ffffff;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .transfer-details {
+            border: 1px solid #cbd5e1;
+            border-top: none;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            padding: 24px;
+            margin-top: -13px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            gap: 24px;
+            background: #ffffff;
+        }
+
+        .transfer-info {
+            flex: 1;
+        }
+
+        .transfer-note {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #334155;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-row strong {
+            font-weight: 600;
+            color: #64748b;
+            width: 110px;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .info-value {
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        #view-content {
+            color: #2563eb;
+        }
+
+        .btn-copy {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 12px;
+            margin-left: 8px;
+            font-weight: 600;
+            background: #eff6ff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .btn-copy:hover {
+            background: #dbeafe;
+        }
+
+        .more-banks {
+            display: inline-block;
+            margin-top: 16px;
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 600;
+        }
+
+        .more-banks:hover {
+            text-decoration: underline;
+        }
+
+        /* --- KHU VỰC THẺ QR CODE ĐẸP --- */
+        .qr-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .qr-box-premium {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 6px;
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+            width: 210px;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-code-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 10px;
+        }
+
+        .qr-loading {
+            opacity: 0.5;
+            filter: blur(1px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="input-panel">
+        <h3>Bảng cấu hình thông tin</h3>
+        <div class="grid-inputs">
+            <div class="form-group">
+                <label for="input-bank">Ngân hàng (Mã viết tắt):</label>
+                <input type="text" id="input-bank" value="ACB">
+                <p class="form-note">Ví dụ chuẩn: ACB, VCB, MB, TCB, BIDV, CTG...</p>
+            </div>
+            <div class="form-group">
+                <label for="input-number">Số tài khoản:</label>
+                <input type="text" id="input-number" value="0052145214">
+            </div>
+            <div class="form-group full-width">
+                <label for="input-name">Tên chủ tài khoản (Không dấu):</label>
+                <input type="text" id="input-name" value="CONG TY VE MAY BAY ABAY">
+            </div>
+            <div class="form-group">
+                <label for="input-amount">Số tiền thanh toán (VNĐ):</label>
+                <input type="text" id="input-amount" value="5,952,100">
+            </div>
+            <div class="form-group">
+                <label for="input-content">Nội dung chuyển khoản:</label>
+                <input type="text" id="input-content" value="FMLB0AF60D">
+            </div>
+
+            <div class="form-group">
+                <label for="upload-vnpay">Tải logo VNPAY thủ công:</label>
+                <input type="file" id="upload-vnpay" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="upload-vietqr">Tải logo VietQR thủ công:</label>
+                <input type="file" id="upload-vietqr" accept="image/*">
+            </div>
+        </div>
+    </div>
+
+
+    <div class="payment-gateway">
+        <h2 class="header-title">Cổng thanh toán trực tuyến</h2>
+        
+        <div class="logo-container">
+            <img id="img-vnpay" src="https://sandbox.vnpayment.vn/paymentv2/Images/brands/logo-vnpay.svg" alt="VNPAY QR">
+            <div class="divider"></div>
+            <img id="img-vietqr" src="https://img.vietqr.io/assets/img/logo.png" alt="VietQR">
+        </div>
+
+        <div class="payment-methods">
+            <div class="method-item">
+                <input type="radio" name="payment_option" id="opt1">
+                <label class="method-label" for="opt1">Thẻ ATM/Tài khoản ngân hàng <span class="method-fee">(Phí giao dịch 1,2%)</span></label>
+            </div>
+
+            <div class="method-item">
+                <input type="radio" name="payment_option" id="opt2">
+                <label class="method-label" for="opt2">Thẻ ATM nội địa qua VNPAY <span class="method-fee">(Phí giao dịch 1%)</span></label>
+            </div>
+
+            <div class="method-item">
+                <input type="radio" name="payment_option" id="opt3">
+                <label class="method-label" for="opt3">Thẻ tín dụng qua OnePay <span class="method-fee">(Phí giao dịch 3,4%)</span></label>
+            </div>
+
+            <div class="method-item">
+                <input type="radio" name="payment_option" id="opt4">
+                <label class="method-label" for="opt4">Thẻ tín dụng qua VNPAY <span class="method-fee">(Phí giao dịch 2,5%)</span></label>
+            </div>
+
+            <div class="method-item active">
+                <input type="radio" name="payment_option" id="opt5" checked>
+                <label class="method-label" for="opt5">Chuyển khoản <span class="method-fee" style="color: #10b981; font-weight: 600; font-style: normal;">(Miễn phí)</span></label>
+            </div>
+
+            <div class="transfer-details" id="transfer-box">
+                <div class="transfer-info">
+                    <p class="transfer-note">
+                        Sau khi nhận được thông tin đặt dịch vụ, nhân viên chăm sóc khách hàng của chúng tôi sẽ liên hệ với Quý khách để xác nhận và hướng dẫn thêm về thủ tục thanh toán.
+                    </p>
+                    
+                    <div class="info-row"><strong>Tên tài khoản:</strong><span class="info-value" id="view-name">CONG TY VE MAY BAY ABAY</span></div>
+                    <div class="info-row"><strong>Số tiền:</strong><span class="info-value"><span id="view-amount">5,952,100</span> VNĐ</span></div>
+                    <div class="info-row"><strong>Nội dung:</strong><span class="info-value" id="view-content">FMLB0AF60D</span> <a href="#" class="btn-copy" onclick="copyContent(event)">Copy</a></div>
+                    <div class="info-row"><strong>Ngân hàng:</strong><span class="info-value" id="view-bank">ACB</span></div>
+                    <div class="info-row"><strong>Số tài khoản:</strong><span class="info-value" id="view-number">0052145214</span></div>
+                    
+                    <a href="#" class="more-banks">Xem tài khoản 9 ngân hàng khác (Click để xem)</a>
+                </div>
+
+                <div class="qr-wrapper">
+                    <div class="qr-box-premium">
+                        <img class="qr-code-img" id="qr-image" src="" alt="Mã QR VietQR Cao Cấp">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const inputBank = document.getElementById('input-bank');
+    const inputNumber = document.getElementById('input-number');
+    const inputName = document.getElementById('input-name');
+    const inputAmount = document.getElementById('input-amount');
+    const inputContent = document.getElementById('input-content');
+
+    const viewBank = document.getElementById('view-bank');
+    const viewNumber = document.getElementById('view-number');
+    const viewName = document.getElementById('view-name');
+    const viewAmount = document.getElementById('view-amount');
+    const viewContent = document.getElementById('view-content');
+    const qrImage = document.getElementById('qr-image');
+
+    // Khai báo phần xử lý upload logo thủ công
+    const uploadVnpay = document.getElementById('upload-vnpay');
+    const uploadVietqr = document.getElementById('upload-vietqr');
+    const imgVnpay = document.getElementById('img-vnpay');
+    const imgVietqr = document.getElementById('img-vietqr');
+
+    let qrTimeout;
+
+    function renderPaymentGateway() {
+        viewBank.textContent = inputBank.value.trim().toUpperCase();
+        viewNumber.textContent = inputNumber.value.trim();
+        viewName.textContent = inputName.value.trim().toUpperCase();
+        viewAmount.textContent = inputAmount.value.trim();
+        viewContent.textContent = inputContent.value.trim();
+
+        clearTimeout(qrTimeout);
+        qrImage.classList.add('qr-loading'); 
+
+        qrTimeout = setTimeout(() => {
+            const bankCode = inputBank.value.trim().toUpperCase(); 
+            const accountNo = inputNumber.value.trim();
+            const rawAmount = inputAmount.value.replace(/,/g, ''); 
+            const accountName = encodeURIComponent(inputName.value.trim());
+
+            const generateVietQR = `https://img.vietqr.io/image/${bankCode}-${accountNo}-compact2.png?amount=${rawAmount}&accountName=${accountName}`;
+            
+            qrImage.src = generateVietQR;
+        }, 400); 
+    }
+
+    qrImage.onload = function() {
+        qrImage.classList.remove('qr-loading');
+    };
+
+    // Lắng nghe sự kiện khi người dùng chọn file ảnh VNPAY thủ công
+    uploadVnpay.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imgVnpay.src = e.target.result; // Gán ảnh trực tiếp dạng dữ liệu local
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Lắng nghe sự kiện khi người dùng chọn file ảnh VietQR thủ công
+    uploadVietqr.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imgVietqr.src = e.target.result; // Gán ảnh trực tiếp dạng dữ liệu local
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    inputBank.addEventListener('input', renderPaymentGateway);
+    inputNumber.addEventListener('input', renderPaymentGateway);
+    inputName.addEventListener('input', renderPaymentGateway);
+    inputAmount.addEventListener('input', renderPaymentGateway);
+    inputContent.addEventListener('input', renderPaymentGateway);
+
+    renderPaymentGateway();
+
+    function copyContent(event) {
+        event.preventDefault();
+        const txt = viewContent.textContent;
+        navigator.clipboard.writeText(txt).then(() => {
+            alert('Đã sao chép nội dung chuyển khoản: ' + txt);
+        }).catch(err => {
+            console.error('Không thể sao chép: ', err);
+        });
+    }
+
+    const methodItems = document.querySelectorAll('.method-item');
+    const transferBox = document.getElementById('transfer-box');
+
+    methodItems.forEach(item => {
+        item.addEventListener('click', function() {
+            methodItems.forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+            
+            if(this.querySelector('input').id === 'opt5') {
+                transferBox.style.display = 'flex';
+            } else {
+                transferBox.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
