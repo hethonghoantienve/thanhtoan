@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cổng Thanh Toán Trực Tuyến Cao Cấp</title>
+    <title>Cổng Thanh Toán Trực Tuyến Cao Cấp - Sen Việt Group</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -27,7 +27,77 @@
             margin: 0 auto;
         }
 
-        /* --- BẢNG NHẬP LIỆU HIỆN ĐẠI (ADMIN PANEL) --- */
+        /* --- MÀN HÌNH ĐĂNG NHẬP CHUYÊN NGHIỆP --- */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .login-card {
+            background: #ffffff;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        .login-card h2 {
+            color: #0f172a;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .login-card p {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .btn-submit {
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background: #1d4ed8;
+        }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Ẩn nội dung chính khi chưa đăng nhập thành công */
+        .main-content {
+            display: none;
+        }
+
+        /* --- BẢNG NHẬP LIỆU (ADMIN PANEL) --- */
         .input-panel {
             background: #ffffff;
             padding: 24px;
@@ -73,14 +143,15 @@
             grid-column: span 2;
         }
 
-        .form-group label {
+        .form-group label, .login-card label {
             font-weight: 600;
             margin-bottom: 6px;
             font-size: 13px;
             color: #475569;
+            text-align: left;
         }
 
-        .form-group input {
+        .form-group input, .login-card input {
             width: 100%;
             padding: 10px 14px;
             border: 1px solid #cbd5e1;
@@ -91,13 +162,12 @@
             background-color: #f8fafc;
         }
 
-        /* Tối ưu riêng cho ô chọn file */
         .form-group input[type="file"] {
             padding: 6px 12px;
             cursor: pointer;
         }
 
-        .form-group input:focus {
+        .form-group input:focus, .login-card input:focus {
             outline: none;
             border-color: #2563eb;
             background-color: #fff;
@@ -110,7 +180,18 @@
             margin-top: 4px;
         }
 
-        /* --- GIAO DIỆN THANH TOÁN CHUẨN PREMIUM (USER) --- */
+        /* Trạng thái thông báo đang đồng bộ lên Firebase */
+        .sync-status {
+            grid-column: span 2;
+            font-size: 12px;
+            color: #10b981;
+            font-weight: 500;
+            text-align: right;
+            margin-top: -8px;
+            display: none;
+        }
+
+        /* --- GIAO DIỆN THANH TOÁN CHUẨN PREMIUM --- */
         .payment-gateway {
             background: #ffffff;
             padding: 35px 30px;
@@ -148,7 +229,6 @@
             background-color: #e2e8f0;
         }
 
-        /* Danh sách phương thức */
         .payment-methods {
             display: flex;
             flex-direction: column;
@@ -187,7 +267,6 @@
             margin-left: 4px;
         }
 
-        /* Khi phương thức Chuyển Khoản được chọn hoạt động */
         .method-item.active {
             border-color: #cbd5e1;
             background-color: #ffffff;
@@ -220,7 +299,6 @@
             margin-bottom: 20px;
         }
 
-        /* Cấu hình hàng thông tin */
         .info-row {
             font-size: 14.5px;
             margin-bottom: 12px;
@@ -228,7 +306,6 @@
             line-height: 1.5;
         }
 
-        /* Tiêu đề nhãn: Chữ Đậm, Đen */
         .info-row strong {
             font-weight: 700;
             color: #0f172a;
@@ -236,13 +313,11 @@
             display: inline-block;
         }
 
-        /* Giá trị đi kèm: Chữ Thường (Regular) */
         .info-value {
             font-weight: 400;
-            color: #0f172a; /* Màu đen tối đồng bộ */
+            color: #0f172a;
         }
 
-        /* Đã cập nhật phần nội dung chuyển khoản sang màu đen đồng bộ */
         #view-content {
             color: #0f172a; 
         }
@@ -273,7 +348,6 @@
             text-decoration: underline;
         }
 
-        /* --- KHU VỰC THẺ QR CODE ĐẸP --- */
         .qr-wrapper {
             display: flex;
             flex-direction: column;
@@ -310,7 +384,27 @@
 </head>
 <body>
 
-<div class="container">
+<div class="login-overlay" id="login-screen">
+    <div class="login-card">
+        <h2>Hệ Thống Hoàn Tiền</h2>
+        <p>Vui lòng đăng nhập bằng tài khoản quản trị (Tổng / Con)</p>
+        
+        <form id="login-form">
+            <div class="form-group" style="margin-bottom: 14px;">
+                <label for="login-user">Tài khoản:</label>
+                <input type="text" id="login-user" required placeholder="Nhập tài khoản admin">
+            </div>
+            <div class="form-group" style="margin-bottom: 14px;">
+                <label for="login-pass">Mật khẩu:</label>
+                <input type="password" id="login-pass" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn-submit">Đăng Nhập Cổng Cấu Hình</button>
+            <p class="error-msg" id="login-error">Tài khoản không chính xác hoặc không có quyền Admin!</p>
+        </form>
+    </div>
+</div>
+
+<div class="container main-content" id="main-layout">
 
     <div class="input-panel">
         <h3>Bảng cấu hình thông tin</h3>
@@ -333,7 +427,7 @@
                 <input type="text" id="input-amount" value="5,952,100">
             </div>
             <div class="form-group">
-                <label for="input-content">Nội dung chuyển khoản:</label>
+                <label for="input-content">Nội dung chuyển khoản (Chỉ hiển thị text):</label>
                 <input type="text" id="input-content" value="SENVIET66O696091A">
             </div>
 
@@ -345,9 +439,10 @@
                 <label for="upload-vietqr">Tải logo VietQR thủ công:</label>
                 <input type="file" id="upload-vietqr" accept="image/*">
             </div>
+            
+            <div class="sync-status" id="sync-indicator">● Đang đồng bộ Realtime tới Firebase...</div>
         </div>
     </div>
-
 
     <div class="payment-gateway">
         <h2 class="header-title">Cổng thanh toán trực tuyến</h2>
@@ -405,13 +500,33 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
-
 </div>
 
-<script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    // Cấu hình Firebase hệ thống hoàn tiền Sen Việt Group
+    const firebaseConfig = {
+        apiKey: "AIzaSyDuwNk_hjnRhT3uh9_xhhDN7cPrbFWdzOQ",
+        authDomain: "htve-219c6.firebaseapp.com",
+        databaseURL: "https://htve-219c6-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "htve-219c6",
+        storageBucket: "htve-219c6.firebasestorage.app",
+        messagingSenderId: "894265287302",
+        appId: "1:894265287302:web:a57783debcd30e0dea2707",
+        measurementId: "G-Y8S6E8KMY5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    
+    const paymentRef = ref(db, 'payment_gateway_config'); 
+    const usersRef = ref(db, 'users');
+
+    // DOM các phần tử giao diện
     const inputBank = document.getElementById('input-bank');
     const inputNumber = document.getElementById('input-number');
     const inputName = document.getElementById('input-name');
@@ -424,15 +539,90 @@
     const viewAmount = document.getElementById('view-amount');
     const viewContent = document.getElementById('view-content');
     const qrImage = document.getElementById('qr-image');
-
-    const uploadVnpay = document.getElementById('upload-vnpay');
-    const uploadVietqr = document.getElementById('upload-vietqr');
-    const imgVnpay = document.getElementById('img-vnpay');
-    const imgVietqr = document.getElementById('img-vietqr');
+    const syncIndicator = document.getElementById('sync-indicator');
 
     let qrTimeout;
+    let isUpdatingFromFirebase = false;
 
-    function renderPaymentGateway() {
+    // --- LOGIC ĐĂNG NHẬP SỬ DỤNG TÀI KHOẢN ADMIN ---
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const userInp = document.getElementById('login-user').value.trim().toLowerCase();
+        const passInp = document.getElementById('login-pass').value.trim();
+        const errorMsg = document.getElementById('login-error');
+
+        onValue(usersRef, (snapshot) => {
+            const usersData = snapshot.val();
+            let loginSuccess = false;
+
+            if (usersData) {
+                for (let key in usersData) {
+                    const u = usersData[key];
+                    if (u && u.user && u.user.toLowerCase() === userInp && u.pass === passInp && u.role === 'ADMIN' && u.isFrozen !== true) {
+                        loginSuccess = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!usersData && userInp === "admin" && passInp === "123456") {
+                loginSuccess = true;
+            }
+
+            if (loginSuccess) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-layout').style.display = 'block';
+                initRealtimeSync();
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        }, { onlyOnce: true });
+    });
+
+    // --- KHỞI TẠO ĐỒNG BỘ REALTIME HAI CHIỀU ---
+    function initRealtimeSync() {
+        onValue(paymentRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                isUpdatingFromFirebase = true;
+
+                inputBank.value = data.bankCode || '';
+                inputNumber.value = data.accountNo || '';
+                inputName.value = data.accountName || '';
+                inputAmount.value = data.amount || '';
+                inputContent.value = data.content || '';
+
+                renderPaymentGatewayLocal();
+
+                setTimeout(() => { isUpdatingFromFirebase = false; }, 100);
+            }
+        });
+
+        const inputs = [inputBank, inputNumber, inputName, inputAmount, inputContent];
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                if (isUpdatingFromFirebase) return;
+
+                syncIndicator.style.display = 'block';
+                
+                set(paymentRef, {
+                    bankCode: inputBank.value.trim().toUpperCase(),
+                    accountNo: inputNumber.value.trim(),
+                    accountName: inputName.value.trim().toUpperCase(),
+                    amount: inputAmount.value.trim(),
+                    content: inputContent.value.trim(),
+                    lastUpdated: new Date().getTime()
+                }).then(() => {
+                    setTimeout(() => { syncIndicator.style.display = 'none'; }, 800);
+                }).catch(err => console.error("Lỗi đồng bộ Firebase: ", err));
+
+                renderPaymentGatewayLocal();
+            });
+        });
+    }
+
+    // --- RENDER GIAO DIỆN & TẠO MÃ QR TẠI CHỖ (ĐÃ BỎ NỘI DUNG) ---
+    function renderPaymentGatewayLocal() {
         viewBank.textContent = inputBank.value.trim().toUpperCase();
         viewNumber.textContent = inputNumber.value.trim();
         viewName.textContent = inputName.value.trim().toUpperCase();
@@ -448,8 +638,8 @@
             const rawAmount = inputAmount.value.replace(/,/g, ''); 
             const accountName = encodeURIComponent(inputName.value.trim());
 
+            // ĐÃ BỎ: Tham số &addInfo nhận diện nội dung để bắt buộc người dùng ghi tay trong ứng dụng Ngân hàng
             const generateVietQR = `https://img.vietqr.io/image/${bankCode}-${accountNo}-compact2.png?amount=${rawAmount}&accountName=${accountName}`;
-            
             qrImage.src = generateVietQR;
         }, 400); 
     }
@@ -457,14 +647,20 @@
     qrImage.onload = function() {
         qrImage.classList.remove('qr-loading');
     };
+</script>
+
+<script>
+    // --- LOGIC PHỤ (UPLOAD LOGO, COPY, TAB THANH TOÁN) ---
+    const uploadVnpay = document.getElementById('upload-vnpay');
+    const uploadVietqr = document.getElementById('upload-vietqr');
+    const imgVnpay = document.getElementById('img-vnpay');
+    const imgVietqr = document.getElementById('img-vietqr');
 
     uploadVnpay.addEventListener('change', function() {
         const file = this.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(e) {
-                imgVnpay.src = e.target.result;
-            }
+            reader.onload = function(e) { imgVnpay.src = e.target.result; }
             reader.readAsDataURL(file);
         }
     });
@@ -473,24 +669,14 @@
         const file = this.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(e) {
-                imgVietqr.src = e.target.result;
-            }
+            reader.onload = function(e) { imgVietqr.src = e.target.result; }
             reader.readAsDataURL(file);
         }
     });
 
-    inputBank.addEventListener('input', renderPaymentGateway);
-    inputNumber.addEventListener('input', renderPaymentGateway);
-    inputName.addEventListener('input', renderPaymentGateway);
-    inputAmount.addEventListener('input', renderPaymentGateway);
-    inputContent.addEventListener('input', renderPaymentGateway);
-
-    renderPaymentGateway();
-
     function copyContent(event) {
         event.preventDefault();
-        const txt = viewContent.textContent;
+        const txt = document.getElementById('view-content').textContent;
         navigator.clipboard.writeText(txt).then(() => {
             alert('Đã sao chép nội dung chuyển khoản: ' + txt);
         }).catch(err => {
